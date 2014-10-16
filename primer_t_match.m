@@ -6,6 +6,6 @@ t_2 = melting_point(seq2, salt_content)
 if abs(t_1 - t_2) < tolerance
   t_match=true
 else
-  t-match= false
+  t_match= false
 end
 end

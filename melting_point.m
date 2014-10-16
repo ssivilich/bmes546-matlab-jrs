@@ -4,3 +4,4 @@ function Tm = melting_point(sequence, salt_content)
 
 
 %%% blah blah code that computed melting point
+end
