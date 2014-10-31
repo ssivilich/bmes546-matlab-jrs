@@ -1,5 +1,0 @@
-We need a function that will find a sequence based on a user submitted
-sequence ID.
-
-We need a function that finds melting points of primers given a sequence.
-  We need a function that computes gc-content
