@@ -33,6 +33,4 @@ tm_score = dot(props.forward.Tm - Tm_mean, props.reverse.Tm - Tm_mean) ...
   (sum(mean([props.forward.Tm; props.reverse.Tm])) - opts.tm_opt) * ...
     opts.tm_opt_weight;
 
-% hairpin_score = bleh
-
 end
