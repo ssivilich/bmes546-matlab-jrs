@@ -8,7 +8,12 @@ if ~exist('RID', 'var')
     [RID, RTOE] = blastncbi(primer_seq, 'blastn');
     disp(RID)
 end
-blastdata = getblast(RID);
+try
+    blastdata = getblast(RID);
+catch err
+    [RID, RTOE] = blastncbi(primer_seq, 'blastn');
+    blastdata = getblast(RID);
+end
 troublesome_hits = {};
 for hit = blastdata.Hits
     if hiteval(hit)

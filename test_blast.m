@@ -2,5 +2,5 @@
 seq_identifier = 'NM_004272.4'
 primer_seq = 'GCAACATATACCAAGTCAC'
 species = 'Homo sapiens'
-RID = '6CXYD2P301R'
+RID = '6ZG4NN5B01R'
 n_trouble = blast_check(primer_seq, seq_identifier, species, RID)
