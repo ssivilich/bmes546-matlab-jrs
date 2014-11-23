@@ -27,7 +27,8 @@ end
 [forward_start, forward_length] = primers.forward;
 seq_forward = longseq(forward_start:forward_start + forward_length);
 [reverse_start, reverse_length] = primers.reverse;
-seq_reverse = longseq(reverse_start:reverse_start + reverse_length);
+seq_reverse = seqrcomplement( ...
+  longseq(reverse_start - reverse_length:reverse_start));
 
 props.forward = oligoprop(seq_forward);
 props.reverse = oligoprop(seq_reverse);

@@ -32,6 +32,11 @@ if ~isfield(opts, 'gc_weight')
   opts.gc_weight = 0.5;
 end
 
+if ~isfield(opts, 'at_tail_weight')
+  % Arbitrary default, just for now.
+  opts.at_tail_weight = 0.5;
+end
+
 % Calculate oligo properties from bioinformatics toolbox
 props = oligoprop(seq);
 
@@ -58,7 +63,9 @@ gc_score = abs(props.GC - 50) * opts.gc_weight;
 % Calculate Tm component of score
 tm_score = sum((props.Tm - opts.tm_opt).^2) * opts.tm_opt_weight;
 
-score = hairpin_score + dimer_score + gc_score + tm_score;
+at_score = at_tail_score(seq) * opts.at_tail_weight;
+
+score = hairpin_score + dimer_score + gc_score + tm_score + at_score;
 end
 
 function length = longest_hairpin(hairpin_result)
@@ -69,4 +76,9 @@ for run = runs
         length = numel(run)
     end
 end
+end
+
+function score = at_tail_score(seq)
+n_bp = 5;
+count = gc_count(seq(end-n_bp+1:end));
 end

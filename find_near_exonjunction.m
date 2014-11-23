@@ -1,4 +1,5 @@
-function [lst_primers] = find_near_exonjunction(longsequence,junctionposition)
+function [lst_fwd_primers, lst_rev_primers] = ...
+find_near_exonjunction(longsequence,junctionposition)
 % returns first index of junctionposition within longseqence
 k = junctionposition;
 % Variables containing junctionposition index + 200 NT upstream and - 200 NT
