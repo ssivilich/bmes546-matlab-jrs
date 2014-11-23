@@ -70,15 +70,15 @@ end
 
 function length = longest_hairpin(hairpin_result)
 runs = regexp(hairpin_result, '[A-Z]*', 'match');
-length = 0
+length = 0;
 for run = runs
     if numel(run) > length
-        length = numel(run)
+        length = numel(run);
     end
 end
 end
 
 function score = at_tail_score(seq)
 n_bp = 5;
-count = gc_count(seq(end-n_bp+1:end));
+score = gc_count(seq(end-n_bp+1:end));
 end
