@@ -31,4 +31,8 @@ for iI = 1:numel(lst_rev_locs)
     rev_scores(iI) = individual_scoring(primerseq, opts);
 end
 disp(rev_scores)
+
+%% Filter by top scorers
+
+%% Find best pairs
 end

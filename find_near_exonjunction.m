@@ -25,13 +25,13 @@ end
 
 function ok = prefixcheck(shortseq)
 % shortseq must always be a nucleotide sequence of length 5
-ok = true
+ok = true;
 if gc_count(shortseq) ~= 3
-  ok = false
+  ok = false;
 end
 for start = 1:3
   if gc_count(shortseq(start:start+2)) == 3
-    ok = false
+    ok = false;
   end
 end
 end

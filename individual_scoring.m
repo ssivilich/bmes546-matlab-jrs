@@ -70,10 +70,10 @@ end
 
 function length = longest_hairpin(hairpin_result)
 runs = regexp(hairpin_result, '[A-Z]*', 'match');
-length = 0
+length = 0;
 for run = runs
     if numel(run) > length
-        length = numel(run)
+        length = numel(run);
     end
 end
 end
