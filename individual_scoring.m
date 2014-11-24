@@ -80,5 +80,5 @@ end
 
 function score = at_tail_score(seq)
 n_bp = 5;
-count = gc_count(seq(end-n_bp+1:end));
+score = gc_count(seq(end-n_bp+1:end));
 end

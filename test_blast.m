@@ -4,6 +4,7 @@ seq_identifier = 'NM_004272.4'
 % species = 'Homo sapiens'
 % RID = '6ZG4NN5B01R'
 % n_trouble = blast_check(primer_seq, seq_identifier, species, RID)
+% the fist exonjunction of homer1a is 1068
 
 [Header, test_seq] = fastaread('homer1a.fasta');
 if ~exist('RID', 'var')
