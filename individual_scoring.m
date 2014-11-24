@@ -44,7 +44,7 @@ props = oligoprop(seq);
 if numel(props.Hairpins) == 0
     n_hairpin_base = 0;
 else
-    n_hairpin_base = sum(lower(props.Hairpins) ~= props.Hairpins);
+    n_hairpin_base = sum(sum(lower(props.Hairpins) ~= props.Hairpins));
 end
 hairpin_score = n_hairpin_base * opts.hairpin_weight;
 
@@ -66,6 +66,20 @@ tm_score = sum((props.Tm - opts.tm_opt).^2) * opts.tm_opt_weight;
 at_score = at_tail_score(seq) * opts.at_tail_weight;
 
 score = hairpin_score + dimer_score + gc_score + tm_score + at_score;
+if numel(score) ~= 1
+    disp('hairpin_score')
+    disp(hairpin_score)
+    disp('dimer_score')
+    disp(dimer_score)
+    disp('gc_score')
+    disp(gc_score)
+    disp('tm_score')
+    disp(tm_score)
+    disp('at_score')
+    disp(at_score)
+    disp('score')
+    disp(score)
+end
 end
 
 function length = longest_hairpin(hairpin_result)
