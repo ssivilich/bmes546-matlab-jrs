@@ -13,18 +13,20 @@ if ~isfield(opts, 'tm_opt_weight')
   opts.tm_opt_weight = 1;
 end
 
-if ~isfield(opts, 'tm_opt')
-  opts.tm_opt = 59;
-end
-
 if ~isfield(primers, 'forward') | ~isfield(primers, 'reverse')
   ME = MException('primer_score:incompletePrimers', ...
     'Either the forward or reverse primers were not provided');
   throw(ME);
 end
-[forward_start, forward_length] = primers.forward;
+% disp(primers.forward);
+% disp(primers.reverse);
+% [forward_start, forward_length] = primers.forward;
+forward_start = primers.forward(1);
+forward_length = primers.forward(2);
 seq_forward = longseq(forward_start:forward_start + forward_length);
-[reverse_start, reverse_length] = primers.reverse;
+% [reverse_start, reverse_length] = primers.reverse;
+reverse_start = primers.reverse(1);
+reverse_length = primers.reverse(2);
 seq_reverse = seqrcomplement( ...
   longseq(reverse_start - reverse_length:reverse_start));
 

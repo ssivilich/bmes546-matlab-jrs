@@ -4,7 +4,16 @@ function [topfwdseqs,toprevseqs]  = select_primers(longsequence, opts)
 % options.
 if ~isfield(opts, 'n_top_score')
   % Arbitrary default, just for now.
-  opts.n_top_score = 20;
+  opts.n_top_score = 50;
+end
+
+if ~isfield(opts, 'n_top_pair_score')
+  % Arbitrary default, just for now.
+  opts.n_top_pair_score = 20;
+end
+
+if ~isfield(opts, 'tm_opt')
+  opts.tm_opt = 59;
 end
 
 [lst_fwd_primers_starts, lst_rev_primers_starts] = ...
@@ -46,17 +55,15 @@ end
 [sort_scores, sort_ind] = sort(fwd_scores, 'descend');
 topscores_ind = sort_ind(1:min(numel(sort_scores),opts.n_top_score));
 topfwdseqs = fwd_primers(topscores_ind);
-% disp(lst_rev_locs)
-% disp(lst_rev_lengths)
-% disp(topscores_ind)
-topfwdlocs = [lst_fwd_locs(topscores_ind), lst_fwd_lengths(topscores_ind)];
+topfwdlocs = [lst_fwd_locs(topscores_ind); lst_fwd_lengths(topscores_ind)];
+% disp(topfwdlocs);
 
 % For rev
 [sort_scores, sort_ind] = sort(rev_scores, 'descend');
 topscores_ind = sort_ind(1:opts.n_top_score);
 toprevseqs = rev_primers(topscores_ind);
-toprevlocs = [lst_rev_locs(topscores_ind), lst_rev_lengths(topscores_ind)];
-
+toprevlocs = [lst_rev_locs(topscores_ind); lst_rev_lengths(topscores_ind)];
+% disp(toprevlocs);
 
 %% Find best pairs
 i = 1:size(topfwdseqs, 2);
@@ -64,8 +71,14 @@ j = 1:size(toprevseqs, 2);
 [J, I] = meshgrid(i, j);
 pairscore = zeros(numel(J));
 for iter = 1:numel(J)
-    primers.forward = topfwdlocs(I(iter), :);
-    primers.reverse = toprevlocs(J(iter), :);
-    pairscore(iter) = pair_scoring(primers, longsequence, struct());
+    [primers.forward] = topfwdlocs(:, I(iter))';
+    % disp(primers.forward);
+    [primers.reverse] = toprevlocs(:, J(iter))';
+    % disp(primers.reverse);
+    pairscore(iter) = pair_scoring(primers, longsequence, opts);
 end
+[sort_scores, sort_ind] = sort(pairscore, 'descend');
+topscores_ind = sort_ind(1:opts.n_top_pair_score);
+topfwdseqs = topfwdlocs(:, I(topscores_ind));
+toprevseqs = toprevlocs(:, J(topscores_ind));
 end
