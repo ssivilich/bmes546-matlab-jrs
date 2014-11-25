@@ -10,7 +10,7 @@ end
 
 if ~isfield(opts, 'tm_opt_weight')
   % Arbitrary default, just for now.
-  opts.tm_opt_weight = 1;
+  opts.tm_opt_weight = 0.5;
 end
 
 if ~isfield(opts, 'tm_opt')
@@ -61,7 +61,7 @@ dimer_score = opts.dimer_weight * (n_dimer_base > 4);
 gc_score = abs(props.GC - 50) * opts.gc_weight;
 
 % Calculate Tm component of score
-tm_score = sum((props.Tm - opts.tm_opt).^2) * opts.tm_opt_weight;
+tm_score = sum((props.Tm - opts.tm_opt)) * opts.tm_opt_weight;
 
 at_score = at_tail_score(seq) * opts.at_tail_weight;
 

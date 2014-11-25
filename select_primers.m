@@ -1,4 +1,4 @@
-function lst_primers = select_primers(longsequence, opts)
+function [topfwdseqs,toprevseqs]  = select_primers(longsequence, opts)
 % This is the main function that selects primers based on a
 % longsequence (the actual transcript to amplify for), and a struct of
 % options.
@@ -9,7 +9,7 @@ end
 
 [lst_fwd_primers_starts, lst_rev_primers_starts] = ...
     find_near_exonjunction(longsequence, opts.exonjunction);
-primer_len = [18:24];
+primer_len = [19:22];
 
 %% Calculate forward primers
 [lst_fwd_locs, lst_fwd_lengths] = meshgrid(lst_fwd_primers_starts, ...
@@ -44,15 +44,19 @@ end
 %% Filter by top scorers
 % For fwd
 [sort_scores, sort_ind] = sort(fwd_scores, 'descend');
-topscores_ind = sort_ind(1:opts.n_top_score);
+topscores_ind = sort_ind(1:min(numel(sort_scores),opts.n_top_score));
 topfwdseqs = fwd_primers(topscores_ind);
-topfwdlocs = [lst_rev_locs(topscores_ind), lst_rev_lengths(topscores_ind)];
+% disp(lst_rev_locs)
+% disp(lst_rev_lengths)
+% disp(topscores_ind)
+topfwdlocs = [lst_fwd_locs(topscores_ind), lst_fwd_lengths(topscores_ind)];
 
 % For rev
 [sort_scores, sort_ind] = sort(rev_scores, 'descend');
 topscores_ind = sort_ind(1:opts.n_top_score);
 toprevseqs = rev_primers(topscores_ind);
 toprevlocs = [lst_rev_locs(topscores_ind), lst_rev_lengths(topscores_ind)];
+
 
 %% Find best pairs
 i = 1:size(topfwdseqs, 2);
