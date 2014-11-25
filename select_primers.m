@@ -19,7 +19,7 @@ primer_len);
 fwd_primers = {};
 fwd_scores = zeros(1, numel(lst_fwd_locs));
 for iI = 1:numel(lst_fwd_locs)
-    primerseq = get_fwd_primer(lonsequence, lst_fwd_locs(iI), ...
+    primerseq = get_fwd_primer(longsequence, lst_fwd_locs(iI), ...
         lst_fwd_lengths(iI));
     fwd_primers(end+1) = {primerseq};
     score = individual_scoring(primerseq, opts);
@@ -33,7 +33,7 @@ primer_len);
 rev_primers = {};
 rev_scores = zeros(1, numel(lst_rev_locs));
 for iI = 1:numel(lst_rev_locs)
-    primerseq = get_rev_primer(lonsequence, lst_rev_locs(iI), ...
+    primerseq = get_rev_primer(longsequence, lst_rev_locs(iI), ...
         lst_rev_lengths(iI));
     rev_primers(end+1) = {primerseq};
     score = individual_scoring(primerseq, opts);
@@ -55,4 +55,13 @@ toprevseqs = rev_primers(topscores_ind);
 toprevlocs = [lst_rev_locs(topscores_ind), lst_rev_lengths(topscores_ind)];
 
 %% Find best pairs
+i = 1:size(topfwdseqs, 2);
+j = 1:size(toprevseqs, 2);
+[J, I] = meshgrid(i, j);
+pairscore = zeros(numel(J));
+for iter = 1:numel(J)
+    primers.forward = topfwdlocs(I(iter), :);
+    primers.reverse = toprevlocs(J(iter), :);
+    pairscore(iter) = pair_scoring(primers, longsequence, struct());
+end
 end

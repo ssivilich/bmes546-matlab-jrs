@@ -3,8 +3,6 @@ function score = pair_scoring(primers, longseq, opts)
 % The score will be higher for a poorer primer (like golf).
 % Each primer are represented by a length 2 array of [start, length].
 
-score = 0;
-
 if ~isfield(opts, 'tm_diff_weight')
   % Arbitrary default, just for now.
   opts.tm_diff_weight = 1;
@@ -38,5 +36,7 @@ tm_score = dot(props.forward.Tm - Tm_mean, props.reverse.Tm - Tm_mean) ...
   * opts.tm_diff_weight + ...
   (sum(mean([props.forward.Tm; props.reverse.Tm])) - opts.tm_opt) * ...
     opts.tm_opt_weight;
+
+score = tm_score;
 
 end
