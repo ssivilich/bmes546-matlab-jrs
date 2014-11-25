@@ -1,23 +1,22 @@
 function [lst_fwd_primers, lst_rev_primers] = ...
-find_near_exonjunction(longsequence,junctionposition)
-% returns first index of junctionposition within longseqence
+  find_near_exonjunction(longsequence,junctionposition)
 k = junctionposition;
-% Variables containing junctionposition index + 200 NT upstream and - 200 NT
-% downstream
 seqlen = numel(longsequence);
 maxampliconlength = 200;
 lst_fwd_primers = [];
 for i = max(k-maxampliconlength, 1):k-1
-  if prefixcheck(longsequence(i:i+4))
+  % if prefixcheck(longsequence(i:i+4))
+  if prefixcheck(get_fwd_primer(longsequence, i, 5))
     lst_fwd_primers(end+1) = i;
   end
 end
 
-revseq = seqrcomplement(longsequence);
-revk = seqlen - k;
+% revseq = seqrcomplement(longsequence);
+% revk = seqlen - k;
 lst_rev_primers = [];
-for i = max(revk-maxampliconlength, 1):revk-1
-  if prefixcheck(revseq(i:i+4));
+for i = k:min(k+maxampliconlength, seqlen)
+  % if prefixcheck(revseq(i:i+4));
+  if prefixcheck(get_rev_primer(longsequence, i, 5))
     lst_rev_primers(end+1) = i;
   end
 end
