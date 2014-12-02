@@ -142,7 +142,7 @@ test_seq = handles.longsequence;
 [filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
 filepath = [filedir filename];
 set(handles.status_label, 'String', 'please wait...');
-if fname == 0
+if filepath == 0
     errstring = 'Please select a file'
     set(handles.status_label, 'String', errstring);
 end
