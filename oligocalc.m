@@ -80,7 +80,7 @@ function ChooseFile_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 [filename, filedir] = uigetfile('*.fasta', 'Choose a FASTA sequence file');
-filepath = [filedir '/' filename];
+filepath = [filedir filename];
 [header, test_seq] = fastaread(filepath);
 set(handles.Longseqdisplay, 'String', test_seq);
 handles.longsequence = test_seq;
@@ -98,6 +98,7 @@ str_exonjunction = get(handles.exonjunction_widget, 'String');
 handles.exonjunction = str2num(str_exonjunction);
 if numel(handles.exonjunction) ~= 1
     errstring = 'Invalid exon junction position';
+    set(handles.status_label, 'String', errstring);
     errordlg(errstring);
     error(errstring);
 end
@@ -108,6 +109,7 @@ str_tm = get(handles.tm_widget, 'String');
 handles.tm_opt = str2num(str_tm);
 if numel(handles.tm_opt) ~= 1
     errstring = 'Invalid Tm';
+    set(handles.status_label, 'String', errstring);
     errordlg(errstring);
     error(errstring);
 end
@@ -118,6 +120,7 @@ str_n_single = get(handles.tm_widget, 'String');
 handles.n_top_score = str2num(str_n_single);
 if numel(handles.n_top_score) ~= 1
     errstring = 'Invalid number of individual primers';
+    set(handles.status_label, 'String', errstring);
     errordlg(errstring);
     error(errstring);
 end
@@ -128,6 +131,7 @@ str_n_pair = get(handles.tm_widget, 'String');
 handles.n_top_pair_score = str2num(str_n_pair);
 if numel(handles.n_top_pair_score) ~= 1
     errstring = 'Invalid number of primer pairs';
+    set(handles.status_label, 'String', errstring);
     errordlg(errstring);
     error(errstring);
 end
@@ -136,15 +140,24 @@ opts.n_top_pair_score = handles.n_top_pair_score;
 % Get the sequence from a fasta file
 test_seq = handles.longsequence;
 [filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
-filepath = [filedir '/' filename];
+filepath = [filedir filename];
+set(handles.status_label, 'String', 'please wait...');
+if fname == 0
+    errstring = 'Please select a file'
+    set(handles.status_label, 'String', errstring);
+end
 try
     primerpairs = select_primers(test_seq, opts);
 catch err
-    errordlg('There was a problem during primer selection');
+    errstring = 'There was a problem during primer selection';
+    set(handles.status_label, 'String', errstring);
+    errordlg(errstring);
     rethrow(err);
 end
 generate_report(filepath, primerpairs);
+set(handles.status_label, 'String', 'Done!');
 
+msgbox(['Congratulations, check ' filepath ' for your results']);
 
 function exonjunction_widget_Callback(hObject, eventdata, handles)
 % hObject    handle to exonjunction_widget (see GCBO)
