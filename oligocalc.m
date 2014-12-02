@@ -138,6 +138,8 @@ end
 opts.n_top_pair_score = handles.n_top_pair_score;
 
 % Get the sequence from a fasta file
+handles.longsequence = get(handles.Longseqdisplay, 'String');
+guidata(hObject, handles);
 test_seq = handles.longsequence;
 [filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
 filepath = [filedir filename];
@@ -154,6 +156,8 @@ catch err
     errordlg(errstring);
     rethrow(err);
 end
+reporttable = generate_table(primerpairs);
+set(handles.resultstable, 'Data', reporttable);
 generate_report(filepath, primerpairs);
 set(handles.status_label, 'String', 'Done!');
 
