@@ -22,7 +22,7 @@ function varargout = oligocalc(varargin)
 
 % Edit the above text to modify the response to help oligocalc
 
-% Last Modified by GUIDE v2.5 01-Dec-2014 18:48:35
+% Last Modified by GUIDE v2.5 01-Dec-2014 20:30:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -93,13 +93,58 @@ function Getprimers_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% Set exonjunction position
+str_exonjunction = get(handles.exonjunction_widget, 'String');
+handles.exonjunction = str2num(str_exonjunction);
+if numel(handles.exonjunction) ~= 1
+    errstring = 'Invalid exon junction position';
+    errordlg(errstring);
+    error(errstring);
+end
+opts.exonjunction = handles.exonjunction;
+
+% Set Tm selection
+str_tm = get(handles.tm_widget, 'String');
+handles.tm_opt = str2num(str_tm);
+if numel(handles.tm_opt) ~= 1
+    errstring = 'Invalid Tm';
+    errordlg(errstring);
+    error(errstring);
+end
+opts.tm_opt = handles.tm_opt;
+
+% Set number of individual primers selection
+str_n_single = get(handles.tm_widget, 'String');
+handles.n_top_score = str2num(str_n_single);
+if numel(handles.n_top_score) ~= 1
+    errstring = 'Invalid number of individual primers';
+    errordlg(errstring);
+    error(errstring);
+end
+opts.n_top_score = handles.n_top_score;
+
+% Set number of primer pairs selection
+str_n_pair = get(handles.tm_widget, 'String');
+handles.n_top_pair_score = str2num(str_n_pair);
+if numel(handles.n_top_pair_score) ~= 1
+    errstring = 'Invalid number of primer pairs';
+    errordlg(errstring);
+    error(errstring);
+end
+opts.n_top_pair_score = handles.n_top_pair_score;
+
+% Get the sequence from a fasta file
+test_seq = handles.longsequence;
 [filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
 filepath = [filedir '/' filename];
-handles.exonjunction = str2num(get(handles.exonjunction_widget, 'String'));
-opts.exonjunction = handles.exonjunction;
-test_seq = handles.longsequence;
-primerpairs = select_primers(test_seq, opts);
+try
+    primerpairs = select_primers(test_seq, opts);
+catch err
+    errordlg('There was a problem during primer selection');
+    rethrow(err);
+end
 generate_report(filepath, primerpairs);
+
 
 function exonjunction_widget_Callback(hObject, eventdata, handles)
 % hObject    handle to exonjunction_widget (see GCBO)
@@ -113,6 +158,75 @@ function exonjunction_widget_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function exonjunction_widget_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to exonjunction_widget (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function tm_widget_Callback(hObject, eventdata, handles)
+% hObject    handle to tm_widget (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of tm_widget as text
+%        str2double(get(hObject,'String')) returns contents of tm_widget as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function tm_widget_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to tm_widget (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function n_singles_widget_Callback(hObject, eventdata, handles)
+% hObject    handle to n_singles_widget (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of n_singles_widget as text
+%        str2double(get(hObject,'String')) returns contents of n_singles_widget as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function n_singles_widget_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to n_singles_widget (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function n_pairs_widget_Callback(hObject, eventdata, handles)
+% hObject    handle to n_pairs_widget (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of n_pairs_widget as text
+%        str2double(get(hObject,'String')) returns contents of n_pairs_widget as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function n_pairs_widget_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to n_pairs_widget (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
