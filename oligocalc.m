@@ -22,7 +22,7 @@ function varargout = oligocalc(varargin)
 
 % Edit the above text to modify the response to help oligocalc
 
-% Last Modified by GUIDE v2.5 01-Dec-2014 20:30:26
+% Last Modified by GUIDE v2.5 02-Dec-2014 13:31:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,7 +116,7 @@ end
 opts.tm_opt = handles.tm_opt;
 
 % Set number of individual primers selection
-str_n_single = get(handles.tm_widget, 'String');
+str_n_single = get(handles.n_singles_widget, 'String');
 handles.n_top_score = str2num(str_n_single);
 if numel(handles.n_top_score) ~= 1
     errstring = 'Invalid number of individual primers';
@@ -127,7 +127,7 @@ end
 opts.n_top_score = handles.n_top_score;
 
 % Set number of primer pairs selection
-str_n_pair = get(handles.tm_widget, 'String');
+str_n_pair = get(handles.n_pairs_widget, 'String');
 handles.n_top_pair_score = str2num(str_n_pair);
 if numel(handles.n_top_pair_score) ~= 1
     errstring = 'Invalid number of primer pairs';
@@ -141,13 +141,16 @@ opts.n_top_pair_score = handles.n_top_pair_score;
 handles.longsequence = get(handles.Longseqdisplay, 'String');
 guidata(hObject, handles);
 test_seq = handles.longsequence;
-[filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
-filepath = [filedir filename];
-set(handles.status_label, 'String', 'please wait...');
-if filepath == 0
-    errstring = 'Please select a file'
-    set(handles.status_label, 'String', errstring);
+handles.outputtofile = get(handles.outfile_check, 'Value');
+if handles.outputtofile
+    [filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
+    filepath = [filedir filename];
+    if filepath == 0
+        errstring = 'Please select a file'
+        set(handles.status_label, 'String', errstring);
+    end
 end
+set(handles.status_label, 'String', 'please wait...');
 try
     primerpairs = select_primers(test_seq, opts);
 catch err
@@ -156,12 +159,16 @@ catch err
     errordlg(errstring);
     rethrow(err);
 end
+handles.primerpairs = primerpairs;
+guidata(hObject, handles);
 reporttable = generate_table(primerpairs);
 set(handles.resultstable, 'Data', reporttable);
-generate_report(filepath, primerpairs);
+if handles.outputtofile
+    generate_report(filepath, primerpairs);
+    msgbox(['Congratulations, check ' filepath ' for your results']);
+end
 set(handles.status_label, 'String', 'Done!');
 
-msgbox(['Congratulations, check ' filepath ' for your results']);
 
 function exonjunction_widget_Callback(hObject, eventdata, handles)
 % hObject    handle to exonjunction_widget (see GCBO)
@@ -252,3 +259,12 @@ function n_pairs_widget_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in outfile_check.
+function outfile_check_Callback(hObject, eventdata, handles)
+% hObject    handle to outfile_check (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of outfile_check
