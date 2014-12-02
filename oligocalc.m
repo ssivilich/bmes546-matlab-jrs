@@ -22,7 +22,7 @@ function varargout = oligocalc(varargin)
 
 % Edit the above text to modify the response to help oligocalc
 
-% Last Modified by GUIDE v2.5 25-Nov-2014 21:18:44
+% Last Modified by GUIDE v2.5 01-Dec-2014 18:48:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,7 +63,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = oligocalc_OutputFcn(hObject, eventdata, handles) 
+function varargout = oligocalc_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -79,10 +79,13 @@ function ChooseFile_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-[filename, filedir] = uigetfile();
-filepath =[filedir '/' filename];
-[header, test_seq] = fastaread(longsequence);
-set(handles.ChooseFile, 'String', test_seq);
+[filename, filedir] = uigetfile('*.fasta', 'Choose a FASTA sequence file');
+filepath = [filedir '/' filename];
+[header, test_seq] = fastaread(filepath);
+set(handles.Longseqdisplay, 'String', test_seq);
+handles.longsequence = test_seq;
+set(handles.seq_label, 'String', header);
+guidata(hObject, handles);
 
 % --- Executes on button press in Getprimers.
 function Getprimers_Callback(hObject, eventdata, handles)
@@ -90,22 +93,26 @@ function Getprimers_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-opts.exonjunction = str2num(get(handles.exonjunction, 'String'));
-test_seq = get(handles.ChooseFile, 'String');
-[topfwdseqs,toprevseqs]  = select_primers(test_seq, opts);
+[filename, filedir] = uiputfile('*.fasta', 'Choose an output file name');
+filepath = [filedir '/' filename];
+handles.exonjunction = str2num(get(handles.exonjunction_widget, 'String'));
+opts.exonjunction = handles.exonjunction;
+test_seq = handles.longsequence;
+primerpairs = select_primers(test_seq, opts);
+generate_report(filepath, primerpairs);
 
-function exonjunction_Callback(hObject, eventdata, handles)
-% hObject    handle to exonjunction (see GCBO)
+function exonjunction_widget_Callback(hObject, eventdata, handles)
+% hObject    handle to exonjunction_widget (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of exonjunction as text
-%        str2double(get(hObject,'String')) returns contents of exonjunction as a double
+% Hints: get(hObject,'String') returns contents of exonjunction_widget as text
+%        str2double(get(hObject,'String')) returns contents of exonjunction_widget as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function exonjunction_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to exonjunction (see GCBO)
+function exonjunction_widget_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to exonjunction_widget (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

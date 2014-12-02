@@ -1,15 +1,15 @@
-function [topfwdseqs,toprevseqs]  = select_primers(longsequence, opts)
+function primerpairs  = select_primers(longsequence, opts)
 % This is the main function that selects primers based on a
 % longsequence (the actual transcript to amplify for), and a struct of
 % options.
 if ~isfield(opts, 'n_top_score')
   % Arbitrary default, just for now.
-  opts.n_top_score = 50;
+  opts.n_top_score = 20;
 end
 
 if ~isfield(opts, 'n_top_pair_score')
   % Arbitrary default, just for now.
-  opts.n_top_pair_score = 20;
+  opts.n_top_pair_score = 10;
 end
 
 if ~isfield(opts, 'tm_opt')
@@ -77,8 +77,15 @@ for iter = 1:numel(J)
     % disp(primers.reverse);
     pairscore(iter) = pair_scoring(primers, longsequence, opts);
 end
-[sort_scores, sort_ind] = sort(pairscore, 'descend');
+[sort_scores, sort_ind] = sort(pairscore, 'ascend');
 topscores_ind = sort_ind(1:opts.n_top_pair_score);
-topfwdseqs = topfwdlocs(:, I(topscores_ind));
-toprevseqs = toprevlocs(:, J(topscores_ind));
+topfwdseqs = topfwdseqs(:, I(topscores_ind));
+toprevseqs = toprevseqs(:, J(topscores_ind));
+primerpairs = struct('fwdseq', {}, 'revseq', {});
+for iter = 1:opts.n_top_pair_score
+    primerpairs(iter).fwdseq = topfwdseqs(iter);
+    primerpairs(iter).revseq = toprevseqs(iter);
+    primerpairs(iter).score = pairscore(topscores_ind(iter));
+    % primerpairs(iter).fwd = pri
+end
 end
