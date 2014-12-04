@@ -62,7 +62,7 @@ tm_score = dot(props.forward.Tm - Tm_mean, props.reverse.Tm - Tm_mean) ...
 
 %% calculate amplicon length part of score
 amplicon_length = reverse_start - forward_start;
-amplicon_length_diff = amplicon_length - opts.amplicon_length_opt;
+amplicon_length_diff = abs(amplicon_length - opts.amplicon_length_opt);
 
 %% calculate total score
 score = tm_score + opts.ind_score_weight * comb_ind_scores + ...
