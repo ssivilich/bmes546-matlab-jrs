@@ -24,8 +24,6 @@ primer_len = [19:22];
 %% Calculate forward primers
 [lst_fwd_locs, lst_fwd_lengths] = meshgrid(lst_fwd_primers_starts, ...
 primer_len);
-% lst_fwd_locs = lst_fwd_locs(:);
-% lst_fwd_lengths = lst_fwd_lengths(:);
 fwd_primers = {};
 fwd_scores = zeros(1, numel(lst_fwd_locs));
 for iI = 1:numel(lst_fwd_locs)
@@ -35,7 +33,6 @@ for iI = 1:numel(lst_fwd_locs)
     score = individual_scoring(primerseq, opts);
     fwd_scores(iI) = score;
 end
-% disp(fwd_scores)
 
 %% Calculate reverse primers
 [lst_rev_locs, lst_rev_lengths] = meshgrid(lst_rev_primers_starts, ...
@@ -49,19 +46,20 @@ for iI = 1:numel(lst_rev_locs)
     score = individual_scoring(primerseq, opts);
     rev_scores(iI) = score;
 end
-% disp(rev_scores)
 
 %% Filter by top scorers
 % For fwd
 [sort_scores, sort_ind] = sort(fwd_scores, 'descend');
 topscores_ind = sort_ind(1:min(numel(sort_scores),opts.n_top_score));
+topfwdscores = sort_scores(topscores_ind);
 topfwdseqs = fwd_primers(topscores_ind);
 topfwdlocs = [lst_fwd_locs(topscores_ind); lst_fwd_lengths(topscores_ind)];
 % disp(topfwdlocs);
 
 % For rev
 [sort_scores, sort_ind] = sort(rev_scores, 'descend');
-topscores_ind = sort_ind(1:opts.n_top_score);
+topscores_ind = sort_ind(1:min(numel(sort_scores), opts.n_top_score));
+toprevscores = sort_scores(topscores_ind);
 toprevseqs = rev_primers(topscores_ind);
 toprevlocs = [lst_rev_locs(topscores_ind); lst_rev_lengths(topscores_ind)];
 % disp(toprevlocs);
@@ -75,8 +73,10 @@ for iter = 1:numel(J)
     [primers.forward] = topfwdlocs(:, I(iter))';
     % disp(primers.forward);
     [primers.reverse] = toprevlocs(:, J(iter))';
+    [ind_scores.forward] = topfwdscores(I(iter));
+    [ind_scores.reverse] = toprevscores(I(iter));
     % disp(primers.reverse);
-    pairscore(iter) = pair_scoring(primers, longsequence, opts);
+    pairscore(iter) = pair_scoring(primers, ind_scores, longsequence, opts);
 end
 [sort_scores, sort_ind] = sort(pairscore, 'ascend');
 topscores_ind = sort_ind(1:opts.n_top_pair_score);
