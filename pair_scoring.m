@@ -18,6 +18,16 @@ if ~isfield(opts, 'ind_score_weight')
   opts.ind_score_weight = 20;
 end
 
+if ~isfield(opts, 'amplicon_length_weight')
+  % Arbitrary default, just for now.
+  opts.amplicon_length_weight = 20;
+end
+
+if ~isfield(opts, 'amplicon_length_opt')
+  % Arbitrary default, just for now.
+  opts.amplicon_length_opt = 200;
+end
+
 if ~isfield(primers, 'forward') | ~isfield(primers, 'reverse')
   ME = MException('primer_score:incompletePrimers', ...
     'Either the forward or reverse primers were not provided');
@@ -41,6 +51,8 @@ seq_reverse = seqrcomplement( ...
 
 props.forward = oligoprop(seq_forward);
 props.reverse = oligoprop(seq_reverse);
+
+%% calculate Tm part of score
 Tm_mean = mean([props.forward.Tm; props.reverse.Tm]);
 
 tm_score = dot(props.forward.Tm - Tm_mean, props.reverse.Tm - Tm_mean) ...
@@ -48,6 +60,12 @@ tm_score = dot(props.forward.Tm - Tm_mean, props.reverse.Tm - Tm_mean) ...
   (sum(mean([props.forward.Tm; props.reverse.Tm])) - opts.tm_opt) * ...
     opts.tm_opt_weight;
 
-score = tm_score + opts.ind_score_weight * comb_ind_scores;
+%% calculate amplicon length part of score
+amplicon_length = reverse_start - forward_start;
+amplicon_length_diff = amplicon_length - opts.amplicon_length_opt;
+
+%% calculate total score
+score = tm_score + opts.ind_score_weight * comb_ind_scores + ...
+opts.amplicon_length_weight * amplicon_length_diff;
 
 end
