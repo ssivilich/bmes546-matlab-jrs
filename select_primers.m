@@ -2,6 +2,7 @@ function primerpairs  = select_primers(longsequence, opts)
 % This is the main function that selects primers based on a
 % longsequence (the actual transcript to amplify for), and a struct of
 % options.
+%% Set default options
 if ~isfield(opts, 'n_top_score')
   % Arbitrary default, just for now.
   opts.n_top_score = 20;

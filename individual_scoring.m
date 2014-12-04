@@ -4,6 +4,7 @@ if ~exist('seq', 'var')
     seq = 'ACGTAGAGGACGTN';
 end
 
+%% set default options
 if ~exist('opts', 'var')
     opts = struct();
 end
@@ -37,10 +38,10 @@ if ~isfield(opts, 'at_tail_weight')
   opts.at_tail_weight = 0.5;
 end
 
-% Calculate oligo properties from bioinformatics toolbox
+%% Calculate oligo properties from bioinformatics toolbox
 props = oligoprop(seq);
 
-% Calculate hairpin component of score.
+%% Calculate hairpin component of score.
 if numel(props.Hairpins) == 0
     n_hairpin_base = 0;
 else
@@ -48,23 +49,24 @@ else
 end
 hairpin_score = n_hairpin_base * opts.hairpin_weight;
 
-% Calculate dimer component of score
+%% Calculate dimer component of score
 if numel(props.Dimers) == 0
     n_dimer_base = 0;
 else
     n_dimer_base = sum(sum(lower(props.Dimers) ~= props.Dimers));
 end
-% dimer_score = n_dimer_base * opts.dimer_weight;
 dimer_score = opts.dimer_weight * (n_dimer_base > 4);
 
-% Calculate GC component of score
+%% Calculate GC component of score
 gc_score = abs(props.GC - 50) * opts.gc_weight;
 
-% Calculate Tm component of score
+%% Calculate Tm component of score
 tm_score = sum((props.Tm - opts.tm_opt)) * opts.tm_opt_weight;
 
+%% Calculate AT tail component of score
 at_score = at_tail_score(seq) * opts.at_tail_weight;
 
+%% Total scores
 score = hairpin_score + dimer_score + gc_score + tm_score + at_score;
 if numel(score) ~= 1
     disp('hairpin_score')
