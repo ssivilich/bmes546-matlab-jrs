@@ -4,6 +4,8 @@ function score = pair_scoring(primers, ind_scores, longseq, opts)
   % Each primer is represented by a length 2 array of [start, length].
   % Individual scores must be provided as well since they factor in to the
   % overall primer score.
+  %
+  % This function due to Sarah Sivilich, Jason Gilliland
 
   if ~isfield(opts, 'tm_diff_weight')
     opts.tm_diff_weight = 1;

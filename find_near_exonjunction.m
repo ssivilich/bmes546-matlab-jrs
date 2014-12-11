@@ -3,6 +3,8 @@ function [lst_fwd_primers, lst_rev_primers] = ...
   % Find all sequences within 200 bases of the given exon junction for both
   % forward and reverse primers.
   % Prescreen them for having the right GC-structure in their first few bases.
+  %
+  % This function due to Jason Gilliland, Sarah Sivilich
 
   k = junctionposition;
   seqlen = numel(longsequence);

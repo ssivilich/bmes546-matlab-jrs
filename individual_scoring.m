@@ -1,10 +1,12 @@
 function score = individual_scoring(seq, opts)
-% Come up with a numerical score for an individual primer given a sequence
-% based on a number of factors, including GC-content, dimerization,
-% hairpinning, presence of AT-tail, melting temperature, etc.
-% The scores are higher where the primer is the poorer, as in golf.
-% The weights of each feature can be manipulated with the fields of the
-% "opts" argument.
+  % Come up with a numerical score for an individual primer given a sequence
+  % based on a number of factors, including GC-content, dimerization,
+  % hairpinning, presence of AT-tail, melting temperature, etc.
+  % The scores are higher where the primer is the poorer, as in golf.
+  % The weights of each feature can be manipulated with the fields of the
+  % "opts" argument.
+  %
+  % This function due to Reham Garash, Jason Gilliland
 
   if ~exist('seq', 'var')
       seq = 'ACGTAGAGGACGTN';

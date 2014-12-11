@@ -79,6 +79,7 @@ function ChooseFile_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% This function is due to Reham Garash
 [filename, filedir] = uigetfile('*.fasta', 'Choose a FASTA sequence file');
 filepath = [filedir filename];
 [header, test_seq] = fastaread(filepath);
@@ -93,6 +94,8 @@ function Getprimers_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+%% This function is due to Jason Gilliland, Sarah Sivilich
+%
 %% Set exonjunction position
 str_exonjunction = get(handles.exonjunction_widget, 'String');
 handles.exonjunction = str2num(str_exonjunction);

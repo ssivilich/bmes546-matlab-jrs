@@ -1,6 +1,8 @@
 function generate_report(fname, primerpairs)
-    % Generate a FASTA formatted report from a given structure of primerpairs at
-    % the specified filename.
+    % Generate a FASTA formatted report from a given structure of
+    % primerpairs at the specified filename.
+    %
+    % This function due to Jason Gilliland, Reham Garash
     fid = fopen(fname, 'w');
     for i_pair = 1:numel(primerpairs)
         fwdseq_string = primerpairs(i_pair).fwdseq;
